@@ -3,34 +3,34 @@ using SpoopyWebAPI.Models;
 
 namespace SpoopyWebAPI.Controllers
 {
+    [Route("api/status")]
     [ApiController]
-    [Route("status")]
-    public class StatusController : ControllerBase
+    public class StatusController : Controller
     {
         private SpoopyStatus _spoopyStatus;
         public StatusController() 
         {
             _spoopyStatus = SpoopyStatusInstance.SpoopyStatus;
         }
-
-        [Route("status", Name = "getStatus")]
-        [HttpGet(Name = "GetSpoopyStatus")]
+                
+        [HttpGet]
+        [Route("status")]
         public bool GetSpoopyStatus() => _spoopyStatus.IsRunning;
 
-        [Route("uptime")]
-        [HttpGet(Name = "GetSpoopyUptime")]
+        [HttpGet]
+        [Route("uptime")]        
         public TimeSpan GetSpoopyUptime() => _spoopyStatus.Uptime;
 
-        [Route("runtime")]
-        [HttpGet(Name = "GetSpoopyRuntime")]
+        [HttpGet]
+        [Route("runtime")]        
         public TimeSpan GetSpoopyRuntime() => _spoopyStatus.Runtime;
 
+        [HttpGet]
         [Route("serverscount")]
-        [HttpGet(Name = "GetSpoopyServersCount")]
         public int GetSpoopyServersCount() => _spoopyStatus.ServersCount;
-
-        [Route("status/post", Name = "postStatus")]
-        [HttpPost(Name = "PostSpoopyStatus")]
+        
+        [HttpPost]
+        [Route("status")]
         public void PostSpoopyStatus(SpoopyStatus model)
         {
             SpoopyStatusInstance.SpoopyStatus = model;

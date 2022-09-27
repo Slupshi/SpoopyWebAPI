@@ -7,16 +7,16 @@ namespace SpoopyWebAPI
     {
         public void Configure(IApplicationBuilder app)
         {
-            app.UseHttpsRedirection();
+            app.UseHttpLogging();
 
-            app.UseRouting();
+            app.UseHttpsRedirection();           
 
             app.UseSession();
 
-            app.UseAuthorization();
+            app.UseRouting();
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
             });
         }
 
@@ -24,6 +24,9 @@ namespace SpoopyWebAPI
         {
             services.AddMvc();
             services.AddSession();
+            services.AddHttpLogging((options) => {
+                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Request;
+            });
         }
     }
 }
