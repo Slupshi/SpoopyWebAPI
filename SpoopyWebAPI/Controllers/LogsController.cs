@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using SpoopyWebAPI.Models;
 
@@ -10,12 +11,18 @@ namespace SpoopyWebAPI.Controllers
     [ApiController]
     public class LogsController : Controller
     {
+        private IConfiguration _configuration;
+        public LogsController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet]
         [Route("logs")]
         public async Task<IEnumerable<SpoopyLogs>> Get()
         {
             List<SpoopyLogs> logs = new List<SpoopyLogs>();
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("SELECT * FROM logs", conn))
@@ -48,7 +55,7 @@ namespace SpoopyWebAPI.Controllers
         [Route("logs")]
         public async Task PostLogs([FromBody] SpoopyLogs logs)
         {
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("INSERT INTO logs (time, message, iserror) VALUES ($1, $2, $3)", conn))

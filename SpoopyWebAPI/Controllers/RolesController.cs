@@ -10,14 +10,18 @@ namespace SpoopyWebAPI.Controllers
     [ApiController]
     public class RolesController : Controller
     {
-        public RolesController() { }
+        private IConfiguration _configuration;
+        public RolesController(IConfiguration configuration) 
+        { 
+            _configuration = configuration;
+        }
 
         [HttpGet]
         [Route("roles")]
         public async Task<IEnumerable<SpoopyRole>> GetRoles()
         {
             List<SpoopyRole> roles = new List<SpoopyRole>();
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("SELECT * FROM roles", conn))
@@ -43,7 +47,7 @@ namespace SpoopyWebAPI.Controllers
         public async Task<SpoopyRole?> GetRoleById(long id)
         {
             SpoopyRole? role = null;
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("SELECT * FROM roles WHERE ID = $1", conn))
@@ -71,7 +75,7 @@ namespace SpoopyWebAPI.Controllers
         public async Task<SpoopyRole?> GetRoleByName(string name)
         {
             SpoopyRole? role = null;
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("SELECT * FROM roles WHERE NAME = $1", conn))
