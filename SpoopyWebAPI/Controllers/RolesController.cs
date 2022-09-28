@@ -100,9 +100,9 @@ namespace SpoopyWebAPI.Controllers
 
         [HttpPut]
         [Route("roles/{id}")]
-        public async Task PostRoles(SpoopyRole role, long id)
+        public async Task PutRole(SpoopyRole role, long id)
         {
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("UPDATE roles SET name = $1, membercount = $2, createdat = $3 WHERE ID = $4", conn))
@@ -119,9 +119,9 @@ namespace SpoopyWebAPI.Controllers
 
         [HttpPost]
         [Route("roles")]
-        public async Task PostRoles(SpoopyRole role)
+        public async Task PostRole(SpoopyRole role)
         {
-            await using var conn = new NpgsqlConnection(Properties.ConnectionString);
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand("INSERT INTO roles (name, membercount, createdat) VALUES ($1, $2, $3)", conn))
