@@ -11,6 +11,7 @@ public class Program
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
+                webBuilder.UseUrls("https://localhost:7057");
                 webBuilder.UseStartup<Startup>();
             });
 }
