@@ -134,5 +134,21 @@ namespace SpoopyWebAPI.Controllers
 
             await conn.CloseAsync();
         }
+
+        [HttpDelete]
+        [Route("roles/{id}")]
+        public async Task DeleteRole(long id)
+        {
+            await using var conn = new NpgsqlConnection(_configuration.GetConnectionString("SpoopyDB"));
+            await conn.OpenAsync();
+
+            await using (var cmd = new NpgsqlCommand("DELETE FROM roles WHERE id = $1", conn))
+            {
+                cmd.Parameters.AddWithValue(id);
+                await cmd.ExecuteNonQueryAsync();
+            }
+
+            await conn.CloseAsync();
+        }
     }
 }
